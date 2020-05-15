@@ -1,4 +1,4 @@
-import { getUserKey } from "./handlers";
+import { stripReceiverFromMessage, getUserKey } from "./handlers";
 
 it("should get sender key id", function () {
   const event = {
@@ -17,3 +17,14 @@ it("should be undefined if not found", function () {
   const key = getUserKey(event.user);
   expect(key).toBe(undefined);
 });
+
+it("should strip receiver id", function () {
+  const id = "U013GNX05AA";
+  const event = {
+    message: `<@${id}> mandou bem fazendo x`,
+  };
+
+  const receiver = stripReceiverFromMessage(event.message);
+  expect(receiver).toBe(id);
+});
+
