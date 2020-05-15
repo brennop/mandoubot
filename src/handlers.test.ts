@@ -28,3 +28,9 @@ it("should strip receiver id", function () {
   expect(receiver).toBe(id);
 });
 
+it("should strip description", function () {
+  const message = "<@U013GNX05AA> mandou bem me ajudando";
+  const { description } = splitMessage(message);
+  expect(description).toBe("mandou bem me ajudando");
+});
+
