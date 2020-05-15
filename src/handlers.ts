@@ -3,8 +3,7 @@ export const getUserKey = (user: string) => {
   return users[user];
 };
 
-export const stripReceiverFromMessage = (message: string) => {
-  const match = message.match(/<@(.*?)>/g)[0];
-  const id = match.replace(/<@(.*?)>/g, "$1");
-  return id;
+export const splitMessage = (message: string) => {
+  const matches = message.split(/<@(.*?)>/g);
+  return { receiver: matches[1] };
 };

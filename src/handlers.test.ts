@@ -1,4 +1,4 @@
-import { stripReceiverFromMessage, getUserKey } from "./handlers";
+import { splitMessage, getUserKey } from "./handlers";
 
 it("should get sender key id", function () {
   const event = {
@@ -24,7 +24,7 @@ it("should strip receiver id", function () {
     message: `<@${id}> mandou bem fazendo x`,
   };
 
-  const receiver = stripReceiverFromMessage(event.message);
+  const { receiver } = splitMessage(event.message);
   expect(receiver).toBe(id);
 });
 
