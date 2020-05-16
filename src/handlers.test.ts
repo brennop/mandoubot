@@ -1,4 +1,4 @@
-import { splitMessage, getUserKey } from "./handlers";
+import { splitMessage, getUser } from "./handlers";
 
 describe("relate slack id with actual user", () => {
   it("gets sender key id", function () {
@@ -6,7 +6,7 @@ describe("relate slack id with actual user", () => {
       user: "U0138KPPPP1",
     };
 
-    const key = getUserKey(event.user);
+    const { key } = getUser(event.user);
     expect(key).toBe(1);
   });
 
@@ -15,8 +15,17 @@ describe("relate slack id with actual user", () => {
       user: "U0138KAPPP1",
     };
 
-    const key = getUserKey(event.user);
-    expect(key).toBeUndefined();
+    const user = getUser(event.user);
+    expect(user).toBeUndefined();
+  });
+
+  it("gets username from slack id", () => {
+    const event = {
+      user: "U0138KPPPP1",
+    };
+
+    const { name } = getUser(event.user);
+    expect(name).toBe("Brenno");
   });
 });
 
@@ -35,6 +44,12 @@ describe("split message in receiver and description", () => {
     const message = "<@U013GNX05AA> mandou bem me ajudando";
     const { description } = splitMessage(message);
     expect(description).toBe("mandou bem me ajudando");
+  });
+
+  it("replaces slack ids with names", () => {
+    const message = "<@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
+    const { description } = splitMessage(message);
+    expect(description).toBe("mandou bem ajudando o Brenno");
   });
 });
 
