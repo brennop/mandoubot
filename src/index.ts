@@ -6,7 +6,7 @@ dotenv.config();
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET);
 const port = 3000;
 
-slackEvents.on("message", (event) => {});
+slackEvents.on("message", (event) => console.log(event.subtype));
 
 slackEvents.on("error", console.error);
 
