@@ -1,4 +1,4 @@
-import { splitMessage, getUser } from "./handlers";
+import { splitMessage, getUser } from "./utils";
 
 describe("relate slack id with actual user", () => {
   it("gets sender key id", function () {
