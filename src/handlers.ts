@@ -1,9 +1,9 @@
 import { newDidGood } from "./services/api";
-import { getUser, splitMessage } from "./utils";
+import { getUser, splitMessage, getGIF } from "./utils";
 
 export const onMessage = async (event) => {
   // should stop if there's a subtype eg. thread reply, channel join
-  if (event.subtype) {
+  if (event.subtype && event.subtype !== "file_share") {
     return;
   }
 

@@ -28,3 +28,13 @@ it("stops when message is a reply/something else", async () => {
   await onMessage(event);
   expect(mockAxios.post).not.toBeCalled();
 });
+
+it("continues if subtype is file_share", async () => {
+  const event = {
+    subtype: "file_share",
+    user: "U0138KPPPP1",
+    text: "<@U013GNX05AA> mandou bem me ajudando",
+  };
+  await onMessage(event);
+  expect(mockAxios.post).toBeCalled();
+});
