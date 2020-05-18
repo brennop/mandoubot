@@ -1,4 +1,5 @@
-import { splitMessage, getUser } from "./utils";
+import mockAxios from "axios";
+import { splitMessage, getUser, getGIF } from "./utils";
 
 describe("relate slack id with actual user", () => {
   it("gets sender key id", function () {
@@ -53,3 +54,39 @@ describe("split message in receiver and description", () => {
   });
 });
 
+describe("getting fallback images", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("handles sucessful api call", async () => {
+    mockAxios.get.mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          data: {
+            image_url: "giphy.gif",
+          },
+        },
+      })
+    );
+
+    const image = await getGIF();
+
+    expect(mockAxios.get).toBeCalledTimes(1);
+    expect(image).toBe("giphy.gif");
+  });
+
+  it("handles api failure", async () => {
+    mockAxios.get.mockImplementation(() =>
+      Promise.reject(new Error("erorr 😥"))
+    );
+
+    console.error = jest.fn();
+
+    const image = await getGIF();
+
+    expect(mockAxios.get).toBeCalledTimes(1);
+    expect(console.error).toBeCalledTimes(1);
+    expect(image).toBe("https://media.giphy.com/media/oBPOP48aQpIxq/giphy.gif");
+  });
+});
