@@ -12,6 +12,7 @@ export const onMessage = async (event) => {
   if (event.text) {
     const { receiver, description } = splitMessage(event.text);
     const { key: receiver_id } = getUser(receiver);
-    newDidGood({ sender_id, receiver_id, description });
+    const photo = event.files ? event.files[0].url_private : await getGIF();
+    newDidGood({ sender_id, receiver_id, description, photo });
   }
 };
