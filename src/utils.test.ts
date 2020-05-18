@@ -52,6 +52,14 @@ describe("split message in receiver and description", () => {
     const { description } = splitMessage(message);
     expect(description).toBe("mandou bem ajudando o Brenno");
   });
+
+  it("identifies start of message", () => {
+    const message =
+      "Galera, queria avisar que o <@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
+    const { receiver, description } = splitMessage(message);
+    expect(receiver).toBe("U013GNX05AA");
+    expect(description).toBe("mandou bem ajudando o Brenno");
+  });
 });
 
 describe("getting fallback images", () => {
