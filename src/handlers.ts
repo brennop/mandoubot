@@ -1,7 +1,7 @@
 import { newDidGood } from "./services/api";
 import { getUser, splitMessage } from "./utils";
 
-export const onMessage = (event) => {
+export const onMessage = async (event) => {
   // should stop if there's a subtype eg. thread reply, channel join
   if (event.subtype) {
     return;
