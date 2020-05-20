@@ -1,12 +1,14 @@
 import dotenv from "dotenv";
 import { createEventAdapter } from "@slack/events-api";
+import { WebClient } from "@slack/web-api";
 
 dotenv.config();
 
-const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET);
 const port = 3000;
+const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET);
+const web = new WebClient(process.env.SLACK_TOKEN);
 
-slackEvents.on("message", (event) => console.log(event));
+slackEvents.on("message", console.log);
 
 slackEvents.on("error", console.error);
 
