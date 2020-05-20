@@ -1,6 +1,5 @@
 import mockAxios from "axios";
-import { onMessage } from "./handlers";
-import { getGIF } from "./utils";
+import { onMessage } from "../handlers";
 
 beforeEach(() => {
   jest.clearAllMocks();

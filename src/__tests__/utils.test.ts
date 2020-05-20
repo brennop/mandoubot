@@ -1,5 +1,5 @@
 import mockAxios from "axios";
-import { splitMessage, getUser, getGIF } from "./utils";
+import { splitMessage, getUser, getGIF } from "../utils";
 
 describe("relate slack id with actual user", () => {
   it("gets sender key id", function () {
