@@ -1,5 +1,11 @@
 import mockAxios from "axios";
-import { splitMessage, getUser, getGIF } from "../utils";
+import {
+  splitMessage,
+  getUser,
+  getGIF,
+  convertEmoji,
+  replaceEmojis,
+} from "../utils";
 
 describe("relate slack id with actual user", () => {
   it("gets sender key id", function () {
@@ -43,22 +49,46 @@ describe("split message in receiver and description", () => {
 
   it("strips description", () => {
     const message = "<@U013GNX05AA> mandou bem me ajudando";
-    const { description } = splitMessage(message);
+    const { text: description } = splitMessage(message);
     expect(description).toBe("mandou bem me ajudando");
   });
 
   it("replaces slack ids with names", () => {
     const message = "<@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
-    const { description } = splitMessage(message);
+    const { text: description } = splitMessage(message);
     expect(description).toBe("mandou bem ajudando o Brenno");
   });
 
   it("identifies start of message", () => {
     const message =
       "Galera, queria avisar que o <@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
-    const { receiver, description } = splitMessage(message);
+    const { receiver, text: description } = splitMessage(message);
     expect(receiver).toBe("U013GNX05AA");
     expect(description).toBe("mandou bem ajudando o Brenno");
+  });
+});
+
+describe("emoji converter", () => {
+  it("replaces emoji shorthand with proper emoji", () => {
+    const emoji = convertEmoji(":thumbsup:");
+    expect(emoji).toBe("👍");
+  });
+
+  it("is itself if not found", () => {
+    const string = convertEmoji("anything");
+    expect(string).toBe("anything");
+  });
+
+  it("converts strings with shorthands to emojis", () => {
+    const text = "Mandou bem: me ajudando :thumbsup: :grinning:";
+    const withEmojis = replaceEmojis(text);
+    expect(withEmojis).toBe("Mandou bem: me ajudando 👍 😀");
+  });
+
+  it("does not convert non-emojis", () => {
+    const text = "Mandou bem :feliz:";
+    const afterReplace = replaceEmojis(text);
+    expect(afterReplace).toBe(text);
   });
 });
 
