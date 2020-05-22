@@ -7,9 +7,14 @@ export const onMessage = async (event) => {
     return;
   }
 
-  const { key: sender_id } = getUser(event.user);
+  const sender = getUser(event.user);
+
+  if (!sender) {
+    throw "User not found";
+  }
 
   if (event.text) {
+    const sender_id = sender.key;
     const { receiver, text } = splitMessage(event.text);
     const description = replaceEmojis(text);
     const { key: receiver_id } = getUser(receiver);

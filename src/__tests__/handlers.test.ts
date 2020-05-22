@@ -67,4 +67,16 @@ describe("onMessage handler", () => {
       photo: "image.jpg",
     });
   });
+
+  it("catches with error when sender is not found", async () => {
+    const event = {
+      subtype: "file_share",
+      user: "<@U013GNX06AA>",
+    };
+
+    expect.assertions(1);
+    return onMessage(event).catch((error) =>
+      expect(error).toMatch("User not found")
+    );
+  });
 });
