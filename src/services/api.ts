@@ -1,5 +1,12 @@
 import axios from "axios";
 
+export type DidGood = {
+  sender_id: number;
+  receiver_id: number;
+  description: string;
+  photo: string;
+};
+
 const api = axios.create({
   baseURL: process.env.CGR_URL,
   headers: {
@@ -8,6 +15,6 @@ const api = axios.create({
   },
 });
 
-export const newDidGood = (data) => api.post("/did_goods", data);
+export const newDidGood = (data: DidGood) => api.post("/did_goods", data);
 
 export default api;
