@@ -14,6 +14,6 @@ export const onMessage = async (event) => {
     const description = replaceEmojis(text);
     const { key: receiver_id } = getUser(receiver);
     const photo = event.files ? event.files[0].url_private : await getGIF();
-    newDidGood({ sender_id, receiver_id, description, photo });
+    return newDidGood({ sender_id, receiver_id, description, photo });
   }
 };
