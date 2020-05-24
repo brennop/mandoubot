@@ -6,64 +6,51 @@ import {
   convertEmoji,
   replaceEmojis,
 } from "../utils";
+import User from "../db/user";
+import mongoose from "../db";
+
+beforeAll(async () => {
+  await User.remove({});
+  await User.create({ name: "Brenno", slack_id: "U0138KPPPP1", key: "1" });
+  await User.create({ name: "Dieguin", slack_id: "U013GNX05AA", key: "2" });
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 describe("relate slack id with actual user", () => {
-  it("gets sender key id", function () {
-    const event = {
-      user: "U0138KPPPP1",
-    };
-
-    const { key } = getUser(event.user);
-    expect(key).toBe(1);
+  it("gets sender key id", async () => {
+    const { key } = await User.findOne({ slack_id: "U0138KPPPP1" });
+    expect(key).toBe("1");
   });
 
-  it("returns undefined if not found", () => {
-    const event = {
-      user: "U0138KAPPP1",
-    };
-
-    const user = getUser(event.user);
-    expect(user).toBeUndefined();
-  });
-
-  it("gets username from slack id", () => {
-    const event = {
-      user: "U0138KPPPP1",
-    };
-
-    const { name } = getUser(event.user);
-    expect(name).toBe("Brenno");
+  it("is falsy if not found", async () => {
+    const user = await getUser("something");
+    expect(user).toBeFalsy();
   });
 });
 
 describe("split message in receiver and description", () => {
-  it("strips receiver id", () => {
+  it("strips receiver id", async () => {
     const id = "U013GNX05AA";
     const event = {
       message: `<@${id}> mandou bem fazendo x`,
     };
 
-    const { receiver } = splitMessage(event.message);
+    const { receiver } = await splitMessage(event.message);
     expect(receiver).toBe(id);
   });
 
-  it("strips description", () => {
+  it("strips description", async () => {
     const message = "<@U013GNX05AA> mandou bem me ajudando";
-    const { text: description } = splitMessage(message);
+    const { text: description } = await splitMessage(message);
     expect(description).toBe("mandou bem me ajudando");
   });
 
-  it("replaces slack ids with names", () => {
+  it("replaces slack ids with names", async () => {
     const message = "<@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
-    const { text: description } = splitMessage(message);
-    expect(description).toBe("mandou bem ajudando o Brenno");
-  });
-
-  it("identifies start of message", () => {
-    const message =
-      "Galera, queria avisar que o <@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
-    const { receiver, text: description } = splitMessage(message);
-    expect(receiver).toBe("U013GNX05AA");
+    const { text: description } = await splitMessage(message);
     expect(description).toBe("mandou bem ajudando o Brenno");
   });
 });
@@ -116,7 +103,7 @@ describe("getting fallback images", () => {
 
   it("handles api failure", async () => {
     mockAxios.get.mockImplementation(() =>
-      Promise.reject(new Error("erorr 😥"))
+      Promise.reject(new Error("error 😥"))
     );
 
     console.error = jest.fn();

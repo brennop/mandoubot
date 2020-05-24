@@ -1,5 +1,17 @@
 import mockAxios from "axios";
 import { onMessage } from "../handlers";
+import User from "../db/user";
+import mongoose from "../db";
+
+beforeAll(async () => {
+  await User.remove({});
+  await User.create({ name: "Brenno", slack_id: "U0138KPPPP1", key: "1" });
+  await User.create({ name: "Dieguin", slack_id: "U013GNX05AA", key: "2" });
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
 
 describe("onMessage handler", () => {
   beforeEach(() => {
@@ -25,8 +37,8 @@ describe("onMessage handler", () => {
     await onMessage(event);
     expect(mockAxios.post).toBeCalledTimes(1);
     expect(mockAxios.post).toBeCalledWith("/did_goods", {
-      sender_id: 1,
-      receiver_id: 2,
+      sender_id: "1",
+      receiver_id: "2",
       description: "mandou bem me ajudando",
       photo: "giphy.gif",
     });
@@ -61,8 +73,8 @@ describe("onMessage handler", () => {
     };
     await onMessage(event);
     expect(mockAxios.post).toBeCalledWith("/did_goods", {
-      sender_id: 1,
-      receiver_id: 2,
+      sender_id: "1",
+      receiver_id: "2",
       description: "mandou bem me ajudando",
       photo: "image.jpg",
     });
