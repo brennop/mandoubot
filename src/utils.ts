@@ -31,7 +31,7 @@ export const convertEmoji = (shorthand: string): string => {
 };
 
 export const replaceEmojis = (text: string): string => {
-  return text.replace(/:([^\ ]*?):/g, convertEmoji);
+  return text.replace(/:([^ ]*?):/g, convertEmoji);
 };
 
 export const getGIF = async () => {

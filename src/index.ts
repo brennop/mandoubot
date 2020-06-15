@@ -1,9 +1,7 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import { createEventAdapter } from "@slack/events-api";
 import { WebClient } from "@slack/web-api";
 import { onMessage } from "./handlers";
-
-dotenv.config();
 
 const port = 3000;
 const slackEvents = createEventAdapter(process.env.SLACK_SIGNING_SECRET);
@@ -11,13 +9,13 @@ const web = new WebClient(process.env.SLACK_TOKEN);
 
 slackEvents.on("message", (event) =>
   onMessage(event)
-    .then(() =>
+    .then(() => {
       web.reactions.add({
         channel: event.channel,
         name: "thumbsup",
         timestamp: event.ts,
-      })
-    )
+      });
+    })
     .catch(console.error)
 );
 
