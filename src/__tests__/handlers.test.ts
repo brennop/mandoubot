@@ -1,3 +1,9 @@
+// mocks user json from __mocks__/user.json
+// it feels awkward to put it here but sucrase does not
+// provide hoisting of mocks yet, and this needs to be mocked
+// before imports
+jest.mock("../users.json");
+
 import mockAxios from "axios";
 import { onMessage } from "../handlers";
 

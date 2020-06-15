@@ -1,3 +1,6 @@
+// see './handlers.test'
+jest.mock("../users.json");
+
 import mockAxios from "axios";
 import {
   splitMessage,
