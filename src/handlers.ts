@@ -7,16 +7,18 @@ export const onMessage = async (event) => {
     return;
   }
 
-  const sender = await getUser(event.user);
+  const sender = getUser(event.user);
 
   if (!sender) {
     throw "User not found";
   }
 
-  const sender_id = sender.key;
-  const { receiver, text } = await splitMessage(event.text);
-  const description = replaceEmojis(text);
-  const { key: receiver_id } = await getUser(receiver);
-  const photo = event.files ? event.files[0].url_private : await getGIF();
-  return newDidGood({ sender_id, receiver_id, description, photo });
+  if (event.text) {
+    const sender_id = sender.key;
+    const { receiver, text } = splitMessage(event.text);
+    const description = replaceEmojis(text);
+    const { key: receiver_id } = getUser(receiver);
+    const photo = event.files ? event.files[0].url_private : await getGIF();
+    return newDidGood({ sender_id, receiver_id, description, photo });
+  }
 };

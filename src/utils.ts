@@ -1,28 +1,24 @@
 import axios from "axios";
+import users from "./users.json";
 import emojis from "./assets/emojis.json";
 
-// Probably a bug with eslint:
-// https://github.com/typescript-eslint/typescript-eslint/issues/363
-// eslint-disable-next-line
-import User, { IUser } from "./db/user";
-
-export const getUser = async (slack_id: string): Promise<IUser> => {
-  return User.findOne({ slack_id });
+export const getUser = (user: string): { key: number; name: string } => {
+  return users[user];
 };
 
-export const splitMessage = async (message: string) => {
+export const splitMessage = (message: string) => {
   const matches = message.split(/<@(.*?)>/g);
-  const stripped = matches.slice(2);
-  const converted = await Promise.all(
-    stripped.map(async (slice) => {
-      const user = await getUser(slice);
+  const text = matches
+    .slice(2)
+    .map((slice) => {
+      const user = getUser(slice);
       if (user) {
         return user.name;
       }
       return slice;
     })
-  );
-  const text = converted.join("").trim();
+    .join("")
+    .trim();
   return { text, receiver: matches[1] };
 };
 
@@ -35,7 +31,7 @@ export const convertEmoji = (shorthand: string): string => {
 };
 
 export const replaceEmojis = (text: string): string => {
-  return text.replace(/:([^ ]*?):/g, convertEmoji);
+  return text.replace(/:([^\ ]*?):/g, convertEmoji);
 };
 
 export const getGIF = async () => {
