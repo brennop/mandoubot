@@ -28,7 +28,8 @@
   },
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "test": "jest --watch --setupFiles dotenv/config --env=node"
+    "test": "jest --watch --setupFiles dotenv/config --env=node",
+    "start": "nodemon src/index.ts"
   },
   "jest": {
     "transform": {
