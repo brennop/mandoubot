@@ -44,39 +44,14 @@ describe("onMessage handler", () => {
       user: "U0138KPPPP1",
       text: "<@U013GNX05AA> mandou bem me ajudando",
     };
-    await onMessage(event);
-    expect(mockAxios.post).not.toBeCalled();
-  });
 
-  it("continues if subtype is file_share", async () => {
-    const event = {
-      subtype: "file_share",
-      user: "U0138KPPPP1",
-      text: "<@U013GNX05AA> mandou bem me ajudando",
-    };
-    await onMessage(event);
-    expect(mockAxios.post).toBeCalled();
-  });
-
-  it("calls axios with attached file", async () => {
-    const event = {
-      subtype: "file_share",
-      user: "U0138KPPPP1",
-      text: "<@U013GNX05AA> mandou bem me ajudando",
-      files: [{ url_private: "image.jpg" }],
-    };
-    await onMessage(event);
-    expect(mockAxios.post).toBeCalledWith("/did_goods", {
-      sender_id: 1,
-      receiver_id: 2,
-      description: "mandou bem me ajudando",
-      photo: "image.jpg",
-    });
+    onMessage(event).catch((error) =>
+      expect(error).toMatch("Message not valid")
+    );
   });
 
   it("catches with error when sender is not found", async () => {
     const event = {
-      subtype: "file_share",
       user: "<@U013GNX06AA>",
     };
 
@@ -84,5 +59,40 @@ describe("onMessage handler", () => {
     return onMessage(event).catch((error) =>
       expect(error).toMatch("User not found")
     );
+  });
+
+  // it("catches when duplicate", async () => {
+  //   const event = {
+  //     user: "U0138KPPPP1",
+  //     text: "<@U013GNX05AA> mandou bem me ajudando :thumbs_up:",
+  //   };
+
+  //   expect.assertions(1);
+  //   onMessage(event).catch((error) =>
+  //     expect(error).toMatch("Duplicate message")
+  //   );
+  //   onMessage(event).catch((error) =>
+  //     expect(error).toMatch("Duplicate message")
+  //   );
+  // });
+
+  it("sends for all receivers", async () => {
+    const event = {
+      user: "U0138KPPPP1",
+      text: "<@U013GNX05AA> <@U0138KPPPP1> lansou a braba",
+    };
+
+    mockAxios.get.mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          data: {
+            image_url: "giphy.gif",
+          },
+        },
+      })
+    );
+
+    await onMessage(event);
+    expect(mockAxios.post).toBeCalledTimes(2);
   });
 });
