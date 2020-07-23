@@ -125,3 +125,4 @@ describe("getting fallback images", () => {
     expect(image).toBe("https://media.giphy.com/media/oBPOP48aQpIxq/giphy.gif");
   });
 });
+

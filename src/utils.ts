@@ -40,3 +40,4 @@ export const getGIF = async () => {
       return "https://media.giphy.com/media/oBPOP48aQpIxq/giphy.gif";
     });
 };
+
