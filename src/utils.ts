@@ -7,26 +7,18 @@ export const getUser = (user: string): { key: number; name: string } => {
 };
 
 export const splitMessage = (message: string) => {
-  const matches = message.split(/<@(.*?)>/g);
-  const text = matches
-    .slice(2)
-    .map((slice) => {
-      const user = getUser(slice);
-      if (user) {
-        return user.name;
-      }
-      return slice;
-    })
-    .join("")
-    .trim();
-  return { text, receiver: matches[1] };
+  const matcher = new RegExp(/<@(.*?)>/g);
+  const text = message.replace(matcher, "").trim();
+  console.log(message)
+  const receivers = [...message.matchAll(matcher)].map(([, match]) => match);
+  return { text, receivers };
 };
 
 export const convertEmoji = (shorthand: string): string => {
   return (
     emojis.find((emoji: { emoji: string; shorthands: string[] }) =>
       emoji.shorthands.includes(shorthand)
-    )?.emoji || shorthand
+    )?.emoji || ""
   );
 };
 
@@ -49,3 +41,4 @@ export const getGIF = async () => {
       return "https://media.giphy.com/media/oBPOP48aQpIxq/giphy.gif";
     });
 };
+

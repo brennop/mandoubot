@@ -15,10 +15,10 @@ slackEvents.on("message", (event) =>
         name: "thumbsup",
         timestamp: event.ts,
       });
-      
-      console.log("Sent 'mandoubem' from event", event)
+
+      console.log("Sent 'mandoubem' from event", event);
     })
-    .catch(error => console.error(error))
+    .catch((error) => console.error(error))
 );
 
 slackEvents.on("error", console.error);

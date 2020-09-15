@@ -46,8 +46,8 @@ describe("split message in receiver and description", () => {
       message: `<@${id}> mandou bem fazendo x`,
     };
 
-    const { receiver } = splitMessage(event.message);
-    expect(receiver).toBe(id);
+    const { receivers } = splitMessage(event.message);
+    expect(receivers).toEqual([id]);
   });
 
   it("strips description", () => {
@@ -56,18 +56,12 @@ describe("split message in receiver and description", () => {
     expect(description).toBe("mandou bem me ajudando");
   });
 
-  it("replaces slack ids with names", () => {
-    const message = "<@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
-    const { text: description } = splitMessage(message);
-    expect(description).toBe("mandou bem ajudando o Brenno");
-  });
-
-  it("identifies start of message", () => {
+  it("identifies all receivers", () => {
     const message =
-      "Galera, queria avisar que o <@U013GNX05AA> mandou bem ajudando o <@U0138KPPPP1>";
-    const { receiver, text: description } = splitMessage(message);
-    expect(receiver).toBe("U013GNX05AA");
-    expect(description).toBe("mandou bem ajudando o Brenno");
+      "<@U013GNX05AA> <@U0138KPPPP1> mandou bem ajudando o trainee mais cedo";
+    const { text: description, receivers } = splitMessage(message);
+    expect(description).toBe("mandou bem ajudando o trainee mais cedo");
+    expect(receivers).toEqual(["U013GNX05AA", "U0138KPPPP1"]);
   });
 });
 
@@ -131,3 +125,4 @@ describe("getting fallback images", () => {
     expect(image).toBe("https://media.giphy.com/media/oBPOP48aQpIxq/giphy.gif");
   });
 });
+
